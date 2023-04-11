@@ -109,9 +109,9 @@ testPredictPlot[:, :] = np.nan
 testPredictPlot[seq_size:len(testPredict) + seq_size, :] = testPredict
 
 # plot baseline and predictions
-plt.plot(sc1.inverse_transform(dataset), label='dataset')
-plt.plot(trainPredictPlot[4], label='trainPredict')
-plt.plot(testPredictPlot[4], label='testPredict')
+plt.plot(dataset['me_power'], label='dataset')
+plt.plot(trainPredictPlot, label='trainPredict')
+plt.plot(testPredictPlot, label='testPredict')
 plt.legend()
 plt.show()
 print('end')
