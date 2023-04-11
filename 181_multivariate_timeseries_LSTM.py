@@ -16,7 +16,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 
 # Read the csv file
 df = pd.read_csv('data/cape1.csv')
-print(df.head())  # 10 columns
+# print(df.head())  # 10 columns
 
 # Separate ids for future plotting
 train_ids = df['Id']
@@ -27,7 +27,7 @@ cols = list(df)[1:]
 
 # Id columns is not used in training.
 # print(cols) ['sog', 'stw', 'head', 'wspeedms', 'wspeedbf', 'wdir', 'drafta', 'draftf', 'trim', 'me_power']
-print(cols)
+# print(cols)
 
 # New dataframe with only training data - 11 columns
 df_for_training = df[cols].astype(float)

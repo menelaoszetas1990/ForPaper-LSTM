@@ -20,13 +20,14 @@ WHICH_CAPE = 2
 # Preprocessing
 
 # Importing the dataset
-dataset = pd.read_csv('D:\\Users\\user\\Desktop\\Maritime\\Hydrus_data\\ME_POWER_PREDICTION\\cape' +str(WHICH_CAPE) + '.csv')
+dataset = pd.read_csv(
+    'D:\\Users\\user\\Desktop\\Maritime\\Hydrus_data\\ME_POWER_PREDICTION\\cape' + str(WHICH_CAPE) + '.csv')
 X = dataset.iloc[:, [0, 1, 4, 5, 8]].values
 y = dataset.iloc[:, 9].values
 y = y.reshape(-1, 1)
 
 # Splitting the dataset into the Training set and Test set
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.1, random_state = 1)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=1)
 
 # Feature Scaling
 sc1 = MinMaxScaler()
