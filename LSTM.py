@@ -23,7 +23,7 @@ Y = dataset.iloc[:, 4].values
 Y = Y.reshape(-1, 1)
 
 # Splitting the dataset into the Training set and Test set
-X_train, X_test, Y_train, Y_test = train_test_split(X, Y, train_size=0.5, test_size=0.1, random_state=1)
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.1, random_state=1, shuffle=False)
 
 # Feature Scaling
 sc1 = MinMaxScaler()
@@ -109,8 +109,9 @@ testPredictPlot[:, :] = np.nan
 testPredictPlot[seq_size:len(testPredict) + seq_size, :] = testPredict
 
 # plot baseline and predictions
-plt.plot(sc1.inverse_transform(dataset))
-plt.plot(trainPredictPlot)
-plt.plot(testPredictPlot)
+plt.plot(sc1.inverse_transform(dataset), label='dataset')
+plt.plot(trainPredictPlot[4], label='trainPredict')
+plt.plot(testPredictPlot[4], label='testPredict')
+plt.legend()
 plt.show()
 print('end')
