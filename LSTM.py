@@ -15,7 +15,7 @@ WHICH_CAPE = 1
 # Preprocessing
 
 # Importing the dataset
-# Using columns: sog, stw, wspeedbf, wdir,  me_power
+# Using columns: sog, stw, wspeedbf, wdir, me_power
 dataset = pd.read_csv('data/cape' + str(WHICH_CAPE) + '.csv', usecols=[0, 1, 4, 5, 9])
 
 X = dataset.values
@@ -69,7 +69,7 @@ model.compile(optimizer='adam', loss='mse')
 model.summary()
 
 # fit the model
-history = model.fit(trainX, trainY, epochs=5, batch_size=16, validation_split=0.1, verbose=1)
+history = model.fit(trainX, trainY, epochs=2, batch_size=16, validation_split=0.1, verbose=1)
 
 plt.plot(history.history['loss'], label='Training loss')
 plt.plot(history.history['val_loss'], label='Validation loss')
@@ -106,12 +106,12 @@ trainPredictPlot[seq_size:len(trainPredict) + seq_size, :] = trainPredict
 # shift test predictions for plotting
 testPredictPlot = np.empty_like(dataset)
 testPredictPlot[:, :] = np.nan
-testPredictPlot[seq_size:len(testPredict) + seq_size, :] = testPredict
+testPredictPlot[len(dataset)-len(testPredict):, :] = testPredict
 
 # plot baseline and predictions
 plt.plot(dataset['me_power'], label='dataset')
-plt.plot(trainPredictPlot, label='trainPredict')
-plt.plot(testPredictPlot, label='testPredict')
+plt.plot(trainPredictPlot[:, 4:], label='trainPredict')
+plt.plot(testPredictPlot[:, 4:], label='testPredict')
 plt.legend()
 plt.show()
 print('end')
