@@ -60,8 +60,14 @@ print("Shape of training set Y: {}".format(trainY.shape))
 print("Shape of test set Y: {}".format(testY.shape))
 
 model = Sequential()
+
+# First Test LSTM_64_32
 model.add(LSTM(64, activation='relu', input_shape=(trainX.shape[1], trainX.shape[2]), return_sequences=True))
 model.add(LSTM(32, activation='relu', return_sequences=False))
+
+# Second Test LSTM_64
+model.add(LSTM(64, activation='relu', input_shape=(trainX.shape[1], trainX.shape[2])))
+
 model.add(Dropout(0.2))
 model.add(Dense(trainY.shape[1]))
 
@@ -69,7 +75,7 @@ model.compile(optimizer='adam', loss='mse')
 model.summary()
 
 # fit the model
-history = model.fit(trainX, trainY, epochs=5, batch_size=16, validation_split=0.1, verbose=1)
+history = model.fit(trainX, trainY, epochs=10, batch_size=64, validation_split=0.1, verbose=1)
 
 plt.plot(history.history['loss'], label='Training loss')
 plt.plot(history.history['val_loss'], label='Validation loss')
