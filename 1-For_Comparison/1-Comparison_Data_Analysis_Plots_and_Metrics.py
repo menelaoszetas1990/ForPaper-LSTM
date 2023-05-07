@@ -70,7 +70,8 @@ def check_best_lstm_settings_result(best_lstm_setting, new_records):
 
 if __name__ == '__main__':
     # read csv
-    df = pd.read_csv('Comparison.csv', header=0)
+    filename = 'Comparison_Data.csv'
+    df = pd.read_csv(filename, header=0)
 
     df['KPI_Train_MAE_Exec_time'] = kpi_calculation(df, 'trainScoreMAE', 'exec_time')
     df['KPI_Train_MSE_Exec_time'] = kpi_calculation(df, 'trainScoreMSE', 'exec_time')
@@ -94,8 +95,8 @@ if __name__ == '__main__':
     columns = ['position', 'double_LSTM', 'sequence_size', 'epoches', 'batch_size',
                'trainScoreMAE', 'trainScoreMSE', 'trainScoreRMSE',
                'testScoreMAE', 'testScoreMSE', 'testScoreRMSE', 'exec_time']
-    filename = 'results.csv'
-    with open('plots/' + filename, 'a', encoding='utf-8', newline='') as _output_file:
+    filename = 'Comparison_Results.csv'
+    with open(filename, 'a', encoding='utf-8', newline='') as _output_file:
         writer = csv.DictWriter(_output_file, fieldnames=columns)
         writer.writeheader()
 

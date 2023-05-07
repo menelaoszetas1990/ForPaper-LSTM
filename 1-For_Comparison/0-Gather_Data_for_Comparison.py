@@ -12,7 +12,6 @@ from tensorflow.python.keras.models import Sequential
 import csv
 import time
 
-filename = 'Comparison.csv'
 WHICH_CAPE = 1
 
 # Preprocessing
@@ -144,6 +143,7 @@ if __name__ == '__main__':
                'trainScoreMAE', 'trainScoreMSE', 'trainScoreRMSE',
                'testScoreMAE', 'testScoreMSE', 'testScoreRMSE', 'exec_time']
 
+    filename = 'Comparison_Data.csv'
     with open(filename, 'a', encoding='utf-8', newline='') as _output_file:
         writer = csv.DictWriter(_output_file, fieldnames=columns)
         writer.writeheader()
