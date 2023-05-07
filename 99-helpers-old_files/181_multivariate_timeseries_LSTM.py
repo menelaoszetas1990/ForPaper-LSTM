@@ -15,7 +15,7 @@ from sklearn.preprocessing import StandardScaler
 pd.options.mode.chained_assignment = None  # default='warn'
 
 # Read the csv file
-df = pd.read_csv('data/cape1.csv')
+df = pd.read_csv('../data/cape1.csv')
 # print(df.head())  # 10 columns
 
 # Separate ids for future plotting

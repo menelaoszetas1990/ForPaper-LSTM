@@ -50,10 +50,10 @@ def lstm_function(_double_lstm=False, _sequence_size=5, _epochs=5, _batch_size=1
         return np.array(x), np.array(y)
 
     start_time = time.time()*1000
+
     seq_size = _sequence_size  # Number of time steps to look back
     # Larger sequences (look further back) may improve forecasting.
 
-    # TODO REVIEW FOR ERROR IN LOGIC
     trainX, trainY = to_sequences(X_train_scaled, seq_size)
     testX, testY = to_sequences(X_test_scaled, seq_size)
 
@@ -106,13 +106,13 @@ def lstm_function(_double_lstm=False, _sequence_size=5, _epochs=5, _batch_size=1
     testY = sc2.inverse_transform(testY)
 
     # calculate errors
-    trainScoreMAE = mean_absolute_error(trainY[0], trainPredict[0])
-    trainScoreMSE = mean_squared_error(trainY[0], trainPredict[0])
-    trainScoreRMSE = math.sqrt(mean_squared_error(trainY[0], trainPredict[0]))
+    trainScoreMAE = mean_absolute_error(trainY, trainPredict)
+    trainScoreMSE = mean_squared_error(trainY, trainPredict)
+    trainScoreRMSE = math.sqrt(mean_squared_error(trainY, trainPredict))
 
-    testScoreMAE = mean_absolute_error(testY[0], testPredict[0])
-    testScoreMSE = mean_squared_error(testY[0], testPredict[0])
-    testScoreRMSE = math.sqrt(mean_squared_error(testY[0], testPredict[0]))
+    testScoreMAE = mean_absolute_error(testY, testPredict)
+    testScoreMSE = mean_squared_error(testY, testPredict)
+    testScoreRMSE = math.sqrt(mean_squared_error(testY, testPredict))
 
     # shift train predictions for plotting
     # we must shift the predictions so that they align on the x-axis with the original dataset.
@@ -136,33 +136,32 @@ def lstm_function(_double_lstm=False, _sequence_size=5, _epochs=5, _batch_size=1
     writer.writerow({'double_LSTM': _double_lstm, 'sequence_size': _sequence_size, 'epoches': _epochs,
                      'batch_size': _batch_size, 'trainScoreMAE': trainScoreMAE, 'trainScoreMSE': trainScoreMSE,
                      'trainScoreRMSE': trainScoreRMSE, 'testScoreMAE': testScoreMAE, 'testScoreMSE': testScoreMSE,
-                     'testScoreRMSE': testScoreRMSE, 'start_time': start_time, 'end_time': end_time})
+                     'testScoreRMSE': testScoreRMSE, 'exec_time': end_time - start_time})
 
 
 if __name__ == '__main__':
     columns = ['double_LSTM', 'sequence_size', 'epoches', 'batch_size',
                'trainScoreMAE', 'trainScoreMSE', 'trainScoreRMSE',
-               'testScoreMAE', 'testScoreMSE', 'testScoreRMSE',
-               'start_time', 'end_time']
+               'testScoreMAE', 'testScoreMSE', 'testScoreRMSE', 'exec_time']
 
     with open(filename, 'a', encoding='utf-8', newline='') as _output_file:
         writer = csv.DictWriter(_output_file, fieldnames=columns)
         writer.writeheader()
+
+        # for Double LSTM
+        double_LSTM = True
+        for sequence_size in range(5, 26, 5):
+            for epoches in range(5, 11):
+                for batch_size in [16, 32, 64]:
+                    for tryNum in range(1, 6):
+                        lstm_function(double_LSTM, sequence_size, epoches, batch_size, tryNum)
 
         # for Single LSTM
         double_LSTM = False
         for sequence_size in range(5, 26, 5):
             for epoches in range(5, 11):
                 for batch_size in [16, 32, 64]:
-                    for i in range(1, 6):
-                        lstm_function(double_LSTM, sequence_size, epoches, batch_size, i)
-
-        # for Double LSTM
-        double_LSTM = True
-        for sequence_size in range(20, 26, 5):
-            for epoches in range(5, 11):
-                for batch_size in [16, 32, 64]:
-                    for i in range(1, 6):
-                        lstm_function(double_LSTM, sequence_size, epoches, batch_size, i)
+                    for tryNum in range(1, 6):
+                        lstm_function(double_LSTM, sequence_size, epoches, batch_size, tryNum)
 
     print('Comparison END')
