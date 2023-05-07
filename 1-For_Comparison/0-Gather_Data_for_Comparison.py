@@ -94,7 +94,7 @@ def lstm_function(_double_lstm=False, _sequence_size=5, _epochs=5, _batch_size=1
     plt.plot(history.history['loss'], label='Training loss')
     plt.plot(history.history['val_loss'], label='Validation loss')
     plt.legend()
-    plt.savefig('plots/' + plt_name + 'ValidationTrainLoss_try{}.png'.format(_try_number))
+    plt.savefig('plots/Validation_Train_Loss/' + plt_name + 'ValidationTrainLoss_try{}.png'.format(_try_number))
 
     # invert predictions back to pre-scaled values
     # This is to compare with original input values
@@ -131,7 +131,7 @@ def lstm_function(_double_lstm=False, _sequence_size=5, _epochs=5, _batch_size=1
     plt.plot(trainPredictPlot[:, 4:], label='trainPredict')
     plt.plot(testPredictPlot[:, 4:], label='testPredict')
     plt.legend()
-    plt.savefig('plots/' + plt_name + 'PredictionComparison_try{}.png'.format(_try_number))
+    plt.savefig('plots/Prediction_Comparison/' + plt_name + 'PredictionComparison_try{}.png'.format(_try_number))
 
     writer.writerow({'double_LSTM': _double_lstm, 'sequence_size': _sequence_size, 'epoches': _epochs,
                      'batch_size': _batch_size, 'trainScoreMAE': trainScoreMAE, 'trainScoreMSE': trainScoreMSE,
