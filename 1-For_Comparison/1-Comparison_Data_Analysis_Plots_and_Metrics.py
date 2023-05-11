@@ -60,7 +60,7 @@ def check_best_lstm_settings_result(best_lstm_setting, new_records):
     for new_record in new_records:
         _found_record = False
         for key in best_lstm_setting.keys():
-            if new_record in best_lstm_setting[key]:
+            if new_record in best_lstm_setting[key][0]:
                 _found_record = True
                 break
         if not _found_record:
@@ -92,7 +92,7 @@ if __name__ == '__main__':
     df_grouped = df.groupby(['double_LSTM', 'sequence_size', 'epoches', 'batch_size']).mean()
     # print(df_grouped.head())
 
-    columns = ['position', 'double_LSTM', 'sequence_size', 'epoches', 'batch_size',
+    columns = ['position', 'found_at_top', 'double_LSTM', 'sequence_size', 'epoches', 'batch_size',
                'trainScoreMAE', 'trainScoreMSE', 'trainScoreRMSE',
                'testScoreMAE', 'testScoreMSE', 'testScoreRMSE', 'exec_time']
     filename = 'Comparison_Results.csv'
@@ -114,7 +114,7 @@ if __name__ == '__main__':
             else:
                 found = result[0]
                 best_LSTM_settings[best_LSTM_settings_index] = \
-                    check_best_lstm_settings_result(best_LSTM_settings, result[1].to_dict(orient='records'))
+                    (check_best_lstm_settings_result(best_LSTM_settings, result[1].to_dict(orient='records')), i)
                 best_LSTM_settings_index += 1
             if found >= top_LSTM_setup_setting_num:
                 break
@@ -124,7 +124,7 @@ if __name__ == '__main__':
         if len(best_LSTM_settings.keys()) > 0:
             for position in best_LSTM_settings.keys():
                 print('{} position:'.format(position))
-                for record in best_LSTM_settings[position]:
+                for record in best_LSTM_settings[position][0]:
                     found_record = df_grouped.loc[(df_grouped['trainScoreMAE'] == record['trainScoreMAE']) &
                                                   (df_grouped['trainScoreMSE'] == record['trainScoreMSE']) &
                                                   (df_grouped['trainScoreRMSE'] == record['trainScoreRMSE']) &
@@ -147,7 +147,8 @@ if __name__ == '__main__':
                     print('\tDouble LSTM: \t{}, \tSequence Size: \t{}, \tEpoches: \t{}, \tBatch Size: \t{}'
                           .format(found_record.index[0][0], found_record.index[0][1], found_record.index[0][2],
                                   found_record.index[0][3]))
-                    writer.writerow({'position': position, 'double_LSTM': found_record.index[0][0],
+                    writer.writerow({'position': position, 'found_at_top': best_LSTM_settings[position][1],
+                                     'double_LSTM': found_record.index[0][0],
                                      'sequence_size': found_record.index[0][1], 'epoches': found_record.index[0][2],
                                      'batch_size': found_record.index[0][3], 'trainScoreMAE': record['trainScoreMAE'],
                                      'trainScoreMSE': record['trainScoreMSE'],
