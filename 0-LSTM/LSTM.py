@@ -16,7 +16,7 @@ WHICH_CAPE = 1
 
 # Importing the dataset
 # Using columns: sog, stw, wspeedbf, wdir, me_power
-dataset = pd.read_csv('data/cape' + str(WHICH_CAPE) + '.csv', usecols=[0, 1, 4, 5, 9])
+dataset = pd.read_csv('../data/cape' + str(WHICH_CAPE) + '.csv', usecols=[0, 1, 4, 5, 9])
 
 X = dataset.values
 Y = dataset.iloc[:, 4].values

@@ -1,13 +1,16 @@
-import math
+import matplotlib.pyplot as plt
 
-from sklearn.metrics import mean_squared_error, mean_absolute_error
+fig, axes = plt.subplots(2, 3, figsize=(30, 10), sharex=True, sharey=True)
+fig.suptitle('Dataset {} - Training loss'.format(1))
+print(axes.shape[0])
+print(axes.shape[1])
 
-x = [1, 3, 5, 7]
-y = [4, 4, 4, 4]
 
-z = mean_absolute_error(x, y)
-print(z)
-z = mean_squared_error(x, y)
-print(z)
-z = math.sqrt(mean_squared_error(x, y))
-print(z)
+import pandas as pd
+
+import matplotlib
+
+print('end')
+
+print(pd.__version__)
+print(matplotlib.__version__)
