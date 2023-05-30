@@ -16,10 +16,10 @@ class Figure1:
         # Importing the dataset
         # Using columns: sog, stw, wspeedbf, wdir, me_power
         self.filename = filename
-        _dataset = pd.read_csv('../../data/' + filename + '.csv', usecols=['sog', 'stw', 'wspeedbf', 'wdir',
+        _dataset = pd.read_csv('../../data/' + filename + '.csv', usecols=['trim', 'sog', 'stw', 'wspeedbf', 'wdir',
                                                                            'me_power'])
 
-        self.X = _dataset[['sog', 'stw', 'wspeedbf', 'wdir']].values
+        self.X = _dataset[['trim', 'sog', 'stw', 'wspeedbf', 'wdir']].values
         self.y = _dataset['me_power'].values.reshape(-1, 1)
         # Splitting the dataset into the Training set and Test set
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
@@ -79,7 +79,7 @@ class Figure1:
         history = model.fit(train_X, train_y, epochs=_max_epochs, batch_size=_batch_size,
                             validation_data=(test_X, test_y), verbose=0, callbacks=[lr])
 
-        name = '{}_LR_{}_SS_{}_BS_{}_HL_{}' \
+        name = '{}_LR_{}_SS_{}_BS_{}_HL_{}_with_trim' \
             .format(self.filename, _learning_rate, _sequence_size, _batch_size, _hidden_layers)
         model.save('models/' + name)
 
@@ -113,7 +113,7 @@ if __name__ == '__main__':
                               _batch_size=best_lstm_setup.head(1)['batch_size'][0],
                               _hidden_layers=best_lstm_setup.head(1)['hidden_layers'][0])
 
-    fig, axes = plt.subplots(2, 3, figsize=(30, 20), subplot_kw=dict(xlim=(1, 10), ylim=(0, 0.08)))
+    fig, axes = plt.subplots(2, 3, figsize=(30, 20), subplot_kw=dict(xlim=(1, 10), ylim=(0, 0.06)))
     plt.grid(True)
     plt.subplots_adjust(bottom=0.25, wspace=0.4, hspace=0.4)
 

@@ -19,9 +19,10 @@ class LSTMPreparation:
         # Importing the dataset
         # Using columns: sog, stw, wspeedbf, wdir, me_power
         self.filename = filename
-        dataset = pd.read_csv('../../data/' + filename + '.csv', usecols=['sog', 'stw', 'wspeedbf', 'wdir', 'me_power'])
+        dataset = pd.read_csv('../../data/' + filename + '.csv', usecols=['trim', 'sog', 'stw', 'wspeedbf', 'wdir',
+                                                                          'me_power'])
 
-        self.X = dataset[['sog', 'stw', 'wspeedbf', 'wdir']].values
+        self.X = dataset[['trim', 'sog', 'stw', 'wspeedbf', 'wdir']].values
         self.y = dataset['me_power'].values.reshape(-1, 1)
         # Splitting the dataset into the Training set and Test set
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
@@ -36,7 +37,7 @@ class LSTMPreparation:
         self.y_test_scaled = self.sc2.transform(self.y_test[:, :])
 
     def lstm_function(self, writer, max_epochs=30, _learning_rate=0.001, _sequence_size=5, _batch_size=16,
-                      hidden_layers=1, _try_number=1, patience=5):
+                      _hidden_layers=1, _try_number=1, patience=5):
         # Training the model on the Training set
         def to_sequences(dataset_x, dataset_y, _sequence_size=1):
             x, y = [], []
@@ -61,18 +62,18 @@ class LSTMPreparation:
         early_stop = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=patience)
         learning_rate = LearningRateScheduler(lambda _: _learning_rate)
 
-        if hidden_layers >= 3:
+        if _hidden_layers >= 3:
             model.add(LSTM(128, activation='relu', input_shape=(train_X.shape[1], train_X.shape[2]),
                            return_sequences=True))
             model.add(LSTM(64, activation='relu', return_sequences=True))
             model.add(LSTM(32, activation='relu', return_sequences=True))
             model.add(LSTM(16, activation='relu', return_sequences=False))
-        elif hidden_layers >= 2:
+        elif _hidden_layers >= 2:
             model.add(LSTM(128, activation='relu', input_shape=(train_X.shape[1], train_X.shape[2]),
                            return_sequences=True))
             model.add(LSTM(64, activation='relu', return_sequences=True))
             model.add(LSTM(32, activation='relu', return_sequences=False))
-        elif hidden_layers >= 1:
+        elif _hidden_layers >= 1:
             model.add(LSTM(128, activation='relu', input_shape=(train_X.shape[1], train_X.shape[2]),
                            return_sequences=True))
             model.add(LSTM(64, activation='relu', return_sequences=False))
@@ -114,7 +115,7 @@ class LSTMPreparation:
             test_score_RMSE = math.sqrt(mean_squared_error(test_y, test_predict))
 
         writer.writerow({'learning_rate': _learning_rate, 'sequence_size': _sequence_size, 'batch_size': _batch_size,
-                         'hidden_layers': hidden_layers, 'train_score_MAE': train_score_MAE,
+                         'hidden_layers': _hidden_layers, 'train_score_MAE': train_score_MAE,
                          'train_score_MSE': train_score_MSE, 'train_score_RMSE': train_score_RMSE,
                          'test_score_MAE': test_score_MAE, 'test_score_MSE': test_score_MSE,
                          'test_score_RMSE': test_score_RMSE, 'epoches_stopped': early_stop.stopped_epoch,
@@ -146,7 +147,7 @@ class LSTMPreparation:
                 for sequence_size in _sequence_sizes:
                     for batch_size in _batch_sizes:
                         for hidden_layer in _hidden_layers:
-                            for tryNum in range(4, tries_number + 4):
+                            for tryNum in range(1, tries_number + 1):
                                 self.lstm_function(writer, max_epoches_number, learning_rate, sequence_size,
                                                    batch_size, hidden_layer, tryNum, patience)
 
@@ -160,5 +161,5 @@ if __name__ == '__main__':
     for dataset_num in dataset_nums:
         test = LSTMPreparation('dataset_{}'.format(dataset_num), 0.1)
         test.run_lstm(_learning_rates=learning_rates, _sequence_sizes=sequence_sizes, _batch_sizes=batch_sizes,
-                      _hidden_layers=hidden_layers, tries_number=1, max_epoches_number=10, patience=5)
+                      _hidden_layers=hidden_layers, tries_number=4, max_epoches_number=10, patience=5)
     print('Comparison END')

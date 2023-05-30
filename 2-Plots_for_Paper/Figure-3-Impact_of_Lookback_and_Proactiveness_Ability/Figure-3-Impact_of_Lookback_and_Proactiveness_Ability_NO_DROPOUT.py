@@ -9,6 +9,9 @@ from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.callbacks import LearningRateScheduler
 from sklearn.metrics import mean_squared_error
 import matplotlib.pyplot as plt
+import matplotlib as mpl
+from matplotlib.colors import LinearSegmentedColormap
+import matplotlib.gridspec as gridspec
 import seaborn as sns
 
 
@@ -19,10 +22,10 @@ class Figure3:
         # Using columns: sog, stw, wspeedbf, wdir, me_power
         self.filename = filename
         self.ship_index = _ship_index
-        _dataset = pd.read_csv('../../data/' + filename + '.csv', usecols=['sog', 'stw', 'wspeedbf', 'wdir',
+        _dataset = pd.read_csv('../../data/' + filename + '.csv', usecols=['trim', 'sog', 'stw', 'wspeedbf', 'wdir',
                                                                            'me_power'])
 
-        self.X = _dataset[['sog', 'stw', 'wspeedbf', 'wdir']].values
+        self.X = _dataset[['trim', 'sog', 'stw', 'wspeedbf', 'wdir']].values
         self.y = _dataset['me_power'].values.reshape(-1, 1)
         # Splitting the dataset into the Training set and Test set
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
@@ -87,33 +90,32 @@ class Figure3:
             .format(self.filename, _learning_rate, _sequence_size, _batch_size, _hidden_layers)
         model.save('models/' + name)
 
+        train_predict = model.predict(train_X)
         test_predict = model.predict(test_X)
 
+        train_score_MSE = float("nan")
         test_score_MSE = float("nan")
-        # test_score_MSE_transformed = float("nan")
         if not np.isnan(test_predict).any():
-            # test_predict_transformed = self.sc2.inverse_transform(test_predict)
-            # test_y_transformed = self.sc2.inverse_transform(test_y)
-
+            train_score_MSE = mean_squared_error(train_y, train_predict)
             test_score_MSE = mean_squared_error(test_y, test_predict)
-            # test_score_MSE_transformed = mean_squared_error(test_y_transformed, test_predict_transformed)
 
         return {'sequence': _sequence_size, 'ship': 'Ship {}'.format(self.ship_index), 'c': _future_predict,
-                'test_score_MSE': test_score_MSE}
+                'test_score_MSE': test_score_MSE, 'train_score_MSE': train_score_MSE}
 
 
 if __name__ == '__main__':
     best_lstm_setup = pd.read_csv(
         '../Step2_Getting_the_Best_LSTM_Setup/Comparison_Data_results_NO_DROPOUT.csv', header=0)
     dataset_nums = [1, 2, 3, 5, 6, 7]
-    learning_rate = 0.001
+    learning_rate = 0.01
     hidden_layer = 1
     sequence_sizes = [5, 10, 15]
     future_predicts = [1, 3, 5]
-    fig_names = ['(a)', '(b)', '(c)']
+    fig_names = ['(a)', '(b)', '(c)', '(d)', '(e)', '(f)', '(g)', '(h)', '(i)']
     # for test
-    # dataset_nums = [1, 2]
-    # learning_rates = [0.01]
+    # dataset_nums = [1]
+    # sequence_sizes = [5, 10, 15]
+    # future_predicts = [1, 3]
 
     history_dict = []
     for sequence_size in sequence_sizes:
@@ -126,26 +128,58 @@ if __name__ == '__main__':
                                                   _batch_size=best_lstm_setup.head(1)['batch_size'][0],
                                                   _hidden_layers=hidden_layer,
                                                   _future_predict=future_predict))
-
     df = pd.DataFrame.from_dict(history_dict)
 
-    fig, axes = plt.subplots(3, 1, figsize=(30, 20), subplot_kw=dict(ylim=(0, 0.08)))
-    plt.grid(True)
-    plt.subplots_adjust(bottom=0.25, wspace=0.4, hspace=0.4)
+    fig, axes = plt.subplots(nrows=3, ncols=3, figsize=(30, 20), width_ratios=[2, 1, 1], height_ratios=[1, 1, 1])
+    plt.subplots_adjust(bottom=0.25, wspace=0.4, hspace=0.6)
+
     for idx, sequence_size in enumerate(sequence_sizes):
         dataframe = df[df['sequence'] == sequence_size]
         dataframe.set_index('ship')
-        sns.barplot(x="ship", y="test_score_MSE", hue="c", data=dataframe, palette="muted", ax=axes[idx])
-        axes[idx].set_xlabel("Ships", fontdict={'fontsize': 32})
-        axes[idx].set_ylabel("Training loss MSE", fontdict={'fontsize': 32})
-        axes[idx].tick_params(axis='both', which='major', labelsize=28)
-        axes[idx].tick_params(axis='both', which='minor', labelsize=28)
-        axes[idx].set_title('{}'.format(fig_names[idx]), fontsize=28)
-        axes[idx].set(xlabel=None)
+        sns.barplot(x="ship", y="train_score_MSE", hue="c", data=dataframe, palette="muted", ax=axes[idx, 0])
+        axes[idx, 0].set(ylim=(0, 0.02))
+        axes[idx, 0].set_xlabel("Ships", fontdict={'fontsize': 32})
+        axes[idx, 0].set_ylabel("Training loss MSE", fontdict={'fontsize': 32})
+        axes[idx, 0].tick_params(axis='both', which='major', labelsize=28)
+        axes[idx, 0].tick_params(axis='both', which='minor', labelsize=28)
+        axes[idx, 0].grid(which='major', color='#666666', linestyle='-', alpha=0.5)
+        axes[idx, 0].xaxis.grid(False)
+        axes[idx, 0].set_title('{}'.format(fig_names[idx]), fontsize=28)
+        axes[idx, 0].set(xlabel=None)
         if idx == len(sequence_sizes) - 1:
-            axes[idx].legend(fontsize=28, loc=8, bbox_to_anchor=(0.5, -1), title='Pro-activeness', title_fontsize=28)
+            axes[idx, 0].legend(fontsize=28, loc=8, bbox_to_anchor=(0.5, -1.1), title='Pro-activeness',
+                                title_fontsize=28)
         else:
-            axes[idx].get_legend().remove()
+            axes[idx, 0].get_legend().remove()
+
+    colors = [(0, 0, 0), (1, 0, 0)]
+    cm = LinearSegmentedColormap.from_list("Custom", colors, N=20)
+    # for idx in range(6):
+    for idx, dataset_num in enumerate(dataset_nums):
+        i = idx % 3
+        j = int(idx / 3) + 1
+        # dataframe = pd.DataFrame(df.loc[df['ship'] == 'Ship {}'.format(idx + 1)])
+        dataframe = pd.DataFrame(df.loc[df['ship'] == 'Ship 1'])
+        dataframe.drop(['ship', 'train_score_MSE'], axis=1, inplace=True)
+        dataframe = dataframe.pivot(index='c', columns='sequence', values='test_score_MSE')
+        dataframe.sort_index(level=0, ascending=False, inplace=True)
+        sns.heatmap(data=dataframe, ax=axes[i, j], linewidths=0.4, cmap=cm, vmin=0.02, vmax=0.08, cbar=False,
+                    annot=True, annot_kws={'size': 28})
+        axes[i, j].tick_params(axis='both', which='major', labelsize=28)
+        axes[i, j].set_ylabel("Pro-activeness\nAbility", fontdict={'fontsize': 32})
+        axes[i, j].set_xlabel("Lookback", fontdict={'fontsize': 32})
+        axes[i, j].set_title('{}'.format(fig_names[idx + 3]), fontsize=28)
+
+    norm = mpl.colors.Normalize(vmin=0.02, vmax=0.08)
+    sm = plt.cm.ScalarMappable(cmap=cm, norm=norm)
+    sm.set_array([])
+    cax = fig.add_axes([0.5, 0.15, 0.4, 0.03])
+    cbar = fig.colorbar(mappable=sm, ax=axes[:, 1:], cax=cax, orientation="horizontal")
+    cbar.set_label('Testing loss MSE', fontsize=32, labelpad=15)
+    ticks = [0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08]
+    cbar.ax.set_xticks(ticks)
+    cbar.ax.tick_params(labelsize=28)
+    # fig.tight_layout()
     fig.savefig('plots/Figure-3-Impact_of_Lookback_and_Proactiveness_Ability_NO_DROPOUT.eps',
                 format='eps')
     fig.savefig('../plots/Figure3/Figure-3-Impact_of_Lookback_and_Proactiveness_Ability_NO_DROPOUT.eps',

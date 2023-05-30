@@ -1,3 +1,2 @@
 position,found_at_top,learning_rate,sequence_size,batch_size,hidden_layers
-1,25,0.001,5,32,0
-2,29,0.001,5,64,0
+1,26,0.01,15,64,0

@@ -16,10 +16,10 @@ class Figure2:
         # Importing the dataset
         # Using columns: sog, stw, wspeedbf, wdir, me_power
         self.filename = filename
-        _dataset = pd.read_csv('../../data/' + filename + '.csv', usecols=['sog', 'stw', 'wspeedbf', 'wdir',
+        _dataset = pd.read_csv('../../data/' + filename + '.csv', usecols=['trim', 'sog', 'stw', 'wspeedbf', 'wdir',
                                                                            'me_power'])
 
-        self.X = _dataset[['sog', 'stw', 'wspeedbf', 'wdir']].values
+        self.X = _dataset[['trim', 'sog', 'stw', 'wspeedbf', 'wdir']].values
         self.y = _dataset['me_power'].values.reshape(-1, 1)
         # Splitting the dataset into the Training set and Test set
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
@@ -79,7 +79,7 @@ class Figure2:
         history = model.fit(train_X, train_y, epochs=_max_epochs, batch_size=_batch_size,
                             validation_data=(test_X, test_y), verbose=0, callbacks=[lr])
 
-        name = '{}_LR_{}_SS_{}_BS_{}_HL_{}' \
+        name = '{}_LR_{}_SS_{}_BS_{}_HL_{}_with_trim' \
             .format(self.filename, _learning_rate, _sequence_size, _batch_size, _hidden_layers)
         model.save('models/' + name)
 
@@ -88,7 +88,7 @@ class Figure2:
 
 if __name__ == '__main__':
     best_lstm_setup = pd.read_csv(
-        '../Step2_Getting_the_Best_LSTM_Setup/Comparison_Data_results_NO_DROPOUT.csv', header=0)
+        '../Step2_Getting_the_Best_LSTM_Setup/Comparison_Data_results_NO_DROPOUT_with_trim.csv', header=0)
     dataset_nums = [1, 2, 3, 5, 6, 7]
     hidden_layers = [0, 1, 2, 3]
     fig_names = ['(a)', '(b)', '(c)', '(d)', '(e)', '(f)']
@@ -104,7 +104,7 @@ if __name__ == '__main__':
                               _batch_size=best_lstm_setup.head(1)['batch_size'][0],
                               _learning_rate=0.001)
 
-    fig, axes = plt.subplots(2, 3, figsize=(30, 20), subplot_kw=dict(xlim=(1, 10), ylim=(0, 0.06)))
+    fig, axes = plt.subplots(2, 3, figsize=(30, 20), subplot_kw=dict(xlim=(1, 10), ylim=(0, 0.02)))
     plt.grid(True)
     plt.subplots_adjust(bottom=0.25, wspace=0.4, hspace=0.4)
 

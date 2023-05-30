@@ -93,7 +93,7 @@ if __name__ == '__main__':
         filename = '../Step1-Gather_Data_for_best_LSTM_Setup_Comparison/Comparison_Data_dataset_{}_NO_DROPOUT.csv'\
             .format(dataset_num)
         test = FindBestLSTMSetupPerDataset(filename)
-        test.export_results('Comparison_Data_results_dataset_{}_NO_DROPOUT.csv'.format(dataset_num), 30)
+        test.export_results('Comparison_Data_results_dataset_{}_NO_DROPOUT.csv'.format(dataset_num), 26)
 
     datasets = []
     for dataset_num in dataset_nums:
