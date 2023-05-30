@@ -11,7 +11,6 @@ from sklearn.metrics import mean_squared_error
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from matplotlib.colors import LinearSegmentedColormap
-import matplotlib.gridspec as gridspec
 import seaborn as sns
 
 
@@ -107,7 +106,7 @@ if __name__ == '__main__':
     best_lstm_setup = pd.read_csv(
         '../Step2_Getting_the_Best_LSTM_Setup/Comparison_Data_results_NO_DROPOUT.csv', header=0)
     dataset_nums = [1, 2, 3, 5, 6, 7]
-    learning_rate = 0.01
+    learning_rate = 0.001
     hidden_layer = 1
     sequence_sizes = [5, 10, 15]
     future_predicts = [1, 3, 5]
@@ -158,8 +157,8 @@ if __name__ == '__main__':
     for idx, dataset_num in enumerate(dataset_nums):
         i = idx % 3
         j = int(idx / 3) + 1
-        # dataframe = pd.DataFrame(df.loc[df['ship'] == 'Ship {}'.format(idx + 1)])
-        dataframe = pd.DataFrame(df.loc[df['ship'] == 'Ship 1'])
+        dataframe = pd.DataFrame(df.loc[df['ship'] == 'Ship {}'.format(idx + 1)])
+        # dataframe = pd.DataFrame(df.loc[df['ship'] == 'Ship 1'])
         dataframe.drop(['ship', 'train_score_MSE'], axis=1, inplace=True)
         dataframe = dataframe.pivot(index='c', columns='sequence', values='test_score_MSE')
         dataframe.sort_index(level=0, ascending=False, inplace=True)
