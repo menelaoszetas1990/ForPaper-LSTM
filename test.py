@@ -1,3 +1,6 @@
-for idx in range(6):
-    print(idx%3)
-    print(int(idx/3))
+a = [1,2,3]
+
+x = []
+for i in range(4):
+    x.append(a)
+    print(i)
