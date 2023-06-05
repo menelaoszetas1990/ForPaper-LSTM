@@ -1,8 +1,7 @@
 # Importing the libraries
 import numpy as np
 import pandas as pd
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, mean_absolute_error
 from tensorflow.python.keras.models import load_model
 from settings import dataset_nums, learning_rate
 from settings import sequence_size, batch_size
@@ -45,21 +44,21 @@ class Score2:
 
 def run_score_2():
     dataset_filenames = []
-    losses_MSE = []
-    losses_MSE_avg = []
+    losses = []
+    losses_avg = []
     for idx, dataset_num in enumerate(dataset_nums):
         dataset_filenames.append('dataset_{}'.format(dataset_num))
         model_name = '{}_LR_{}_SS_{}_BS_{}_HL_{}'.format(dataset_filenames[idx], learning_rate, sequence_size,
                                                          batch_size, hidden_layers_separate_models)
 
         test_dataset = Score2(model_name)
-        losses_MSE.append(test_dataset.model_run())
+        losses.append(test_dataset.model_run())
 
-    for i in range(len(losses_MSE[0])):
+    for i in range(len(losses[0])):
         _sum = 0
         for idx, dataset_num in enumerate(dataset_nums):
-            _sum += losses_MSE[idx][i]
-        losses_MSE_avg.append(_sum / len(dataset_nums))
+            _sum += losses[idx][i]
+        losses_avg.append(_sum / len(dataset_nums))
 
     print('END Score_2')
-    return mean_squared_error(Score2.test_y, losses_MSE_avg)
+    return mean_squared_error(Score2.test_y, losses_avg), mean_absolute_error(Score2.test_y, losses_avg)

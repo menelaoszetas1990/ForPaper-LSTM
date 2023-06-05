@@ -186,21 +186,21 @@ if __name__ == '__main__':
     for dataset_num in dataset_nums:
         dataset_filenames.append('dataset_{}'.format(dataset_num))
 
-    test = Figure4()
-    Figure4.create_test_dataset(dataset_filenames, test_data_filename)
-    Figure4.create_separate_models(_dataset_filenames=dataset_filenames, _learning_rate=learning_rate,
-                                   _hidden_layers=hidden_layers_separate_models, _batch_size=batch_size,
-                                   _sequence_size=sequence_size)
-    Figure4.create_hyper_model(_dataset_filenames=dataset_filenames, _learning_rate=learning_rate,
-                               _hidden_layers=hidden_layers_hyper_models, _batch_size=batch_size,
-                               _sequence_size=sequence_size)
+    # test = Figure4()
+    # Figure4.create_test_dataset(dataset_filenames, test_data_filename)
+    # Figure4.create_separate_models(_dataset_filenames=dataset_filenames, _learning_rate=learning_rate,
+    #                                _hidden_layers=hidden_layers_separate_models, _batch_size=batch_size,
+    #                                _sequence_size=sequence_size)
+    # Figure4.create_hyper_model(_dataset_filenames=dataset_filenames, _learning_rate=learning_rate,
+    #                            _hidden_layers=hidden_layers_hyper_models, _batch_size=batch_size,
+    #                            _sequence_size=sequence_size)
     score_1 = run_score_1()
-    print(score_1)
     score_2 = run_score_2()
-    print(score_2)
     score_3 = run_score_3()
-    print(score_3)
     score_4 = run_score_4()
+    print(score_1)
+    print(score_2)
+    print(score_3)
     print(score_4)
 
     print('END')

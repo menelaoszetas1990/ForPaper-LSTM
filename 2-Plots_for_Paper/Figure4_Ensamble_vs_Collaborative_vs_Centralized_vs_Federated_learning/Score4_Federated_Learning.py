@@ -9,7 +9,7 @@ from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.callbacks import LearningRateScheduler
 from settings import dataset_nums, learning_rate, sequence_size, batch_size, hidden_layers_separate_models
 from settings import test_data_filename, number_of_rounds
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, mean_absolute_error
 
 
 def to_sequences(dataset_x, dataset_y, _sequence_size=1):
@@ -155,7 +155,7 @@ class Score4:
         test_predict = model.predict(Score4.test_X)
         if not (np.isnan(test_predict).any()):
             test_predict = Score4.sc2.inverse_transform(test_predict)
-            return mean_squared_error(Score4.test_y, test_predict)
+            return mean_squared_error(Score4.test_y, test_predict), mean_absolute_error(Score4.test_y, test_predict)
 
 
 def run_score_4():

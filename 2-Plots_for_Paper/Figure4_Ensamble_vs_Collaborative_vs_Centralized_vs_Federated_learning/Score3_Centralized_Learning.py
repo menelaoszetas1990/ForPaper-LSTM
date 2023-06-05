@@ -1,7 +1,7 @@
 # Importing the libraries
 import numpy as np
 import pandas as pd
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, mean_absolute_error
 from tensorflow.python.keras.models import load_model
 from settings import learning_rate, sequence_size, batch_size, hidden_layers_hyper_models
 from settings import test_data_filename
@@ -36,7 +36,7 @@ class Score3:
         test_predict = self.model.predict(self.test_X)
         if not (np.isnan(test_predict).any()):
             test_predict = self.sc2.inverse_transform(test_predict)
-            return mean_squared_error(self.test_y, test_predict)
+            return mean_squared_error(self.test_y, test_predict), mean_absolute_error(self.test_y, test_predict)
 
 
 def run_score_3():
