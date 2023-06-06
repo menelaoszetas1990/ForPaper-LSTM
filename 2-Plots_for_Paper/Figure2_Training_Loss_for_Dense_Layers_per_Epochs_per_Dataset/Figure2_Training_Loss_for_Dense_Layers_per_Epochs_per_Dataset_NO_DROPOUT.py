@@ -126,9 +126,9 @@ if __name__ == '__main__':
             if row_number == 1 and column_number == 1:
                 axes[row_number, column_number].legend(fontsize=28, loc=8, bbox_to_anchor=(0.5, -0.8))
             axes[row_number, column_number].set_title('{}'.format(fig_names[_index]), fontsize=28)
-    fig.savefig('plots/Figure-2-Training_Loss_for_Hidden_Layers_per_Epochs_per_Dataset_NO_DROPOUT.eps',
+    fig.savefig('plots/Figure2_Training_Loss_for_Hidden_Layers_per_Epochs_per_Dataset_NO_DROPOUT.eps',
                 format='eps')
-    fig.savefig('../plots/Figure2/Figure-2-Training_Loss_for_Hidden_Layers_per_Epochs_per_Dataset_NO_DROPOUT.eps',
+    fig.savefig('../plots/Figure2/Figure2_Training_Loss_for_Hidden_Layers_per_Epochs_per_Dataset_NO_DROPOUT.eps',
                 format='eps')
 
     print('END')

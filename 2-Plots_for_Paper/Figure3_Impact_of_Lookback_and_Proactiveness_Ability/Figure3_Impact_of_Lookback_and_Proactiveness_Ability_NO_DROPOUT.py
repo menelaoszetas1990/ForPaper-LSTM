@@ -179,9 +179,9 @@ if __name__ == '__main__':
     cbar.ax.set_xticks(ticks)
     cbar.ax.tick_params(labelsize=28)
     # fig.tight_layout()
-    fig.savefig('plots/Figure-3-Impact_of_Lookback_and_Proactiveness_Ability_NO_DROPOUT.eps',
+    fig.savefig('plots/Figure3_Impact_of_Lookback_and_Proactiveness_Ability_NO_DROPOUT.eps',
                 format='eps')
-    fig.savefig('../plots/Figure3/Figure-3-Impact_of_Lookback_and_Proactiveness_Ability_NO_DROPOUT.eps',
+    fig.savefig('../plots/Figure3/Figure3_Impact_of_Lookback_and_Proactiveness_Ability_NO_DROPOUT.eps',
                 format='eps')
 
     print('END')
