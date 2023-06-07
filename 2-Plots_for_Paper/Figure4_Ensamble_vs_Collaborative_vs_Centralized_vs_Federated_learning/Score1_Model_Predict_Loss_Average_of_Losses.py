@@ -36,13 +36,15 @@ class Score1:
         test_predict = self.model.predict(self.test_X)
         if not (np.isnan(test_predict).any()):
             test_predict = self.sc2.inverse_transform(test_predict)
-            return mean_squared_error(self.test_y, test_predict), mean_absolute_error(self.test_y, test_predict)
+            return mean_squared_error(self.test_y, test_predict), mean_absolute_error(self.test_y, test_predict), \
+                   Score1.y_test[sequence_size:], test_predict
 
 
 def run_score_1():
     dataset_filenames = []
     losses_MSE = []
     losses_MAE = []
+    test_predicts = dict()
     for idx, dataset_num in enumerate(dataset_nums):
         dataset_filenames.append('dataset_{}'.format(dataset_num))
         model_name = '{}_LR_{}_SS_{}_BS_{}_HL_{}'.format(dataset_filenames[idx], learning_rate, sequence_size,
@@ -52,6 +54,8 @@ def run_score_1():
         losses = test_dataset.model_run()
         losses_MSE.append(losses[0])
         losses_MAE.append(losses[1])
+        test_predicts['Pactual'] = losses[2]
+        test_predicts['Ppredict{}'.format(idx)] = losses[3]
 
     print('END Score_1')
-    return sum(losses_MSE) / len(dataset_filenames), sum(losses_MAE) / len(dataset_filenames)
+    return [sum(losses_MSE) / len(dataset_filenames), sum(losses_MAE) / len(dataset_filenames), test_predicts]

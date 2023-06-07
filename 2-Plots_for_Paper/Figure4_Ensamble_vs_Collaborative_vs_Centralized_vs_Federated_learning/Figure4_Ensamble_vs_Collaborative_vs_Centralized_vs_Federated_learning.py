@@ -192,6 +192,7 @@ if __name__ == '__main__':
     for dataset_num in dataset_nums:
         dataset_filenames.append('dataset_{}'.format(dataset_num))
     fig_names = ['(a)', '(b)', '(c)', '(d)', '(e)']
+    axes_names = ['a', 'b', 'c', 'd', 'e']
 
     # test = Figure4()
     # Figure4.create_test_dataset(dataset_filenames, test_data_filename)
@@ -202,67 +203,62 @@ if __name__ == '__main__':
     #                            _hidden_layers=hidden_layers_hyper_models, _batch_size=batch_size,
     #                            _sequence_size=sequence_size)
     scores = []
-    scores.append(round(run_score_1()[1], 2))
-    scores.append(round(run_score_2()[1], 2))
-    scores.append(round(run_score_3()[1], 2))
-    scores.append(round(run_score_3()[1] + 100, 2))
-    # scores.append(round(run_score_4()[1], 2))
+    test_predicts = []
+    score_1 = run_score_1()
+    score_2 = run_score_2()
+    score_3 = run_score_3()
+    score_4 = run_score_4()
+    scores.append(round(score_1[1], 2))
+    scores.append(round(score_2[1], 2))
+    scores.append(round(score_3[1], 2))
+    scores.append(round(score_4[1], 2))
+    test_predicts.append(score_1[2])
+    test_predicts.append(score_2[2])
+    test_predicts.append(score_3[2])
+    test_predicts.append(score_4[2])
+
     for scr in scores:
         print(scr)
     scores = normalize_numbers(scores)
 
     df = pd.DataFrame({'lab': ['ΤΑΙΑ', 'ΤΑΙΜ', 'ΤΟΙΟ', 'TFIF'], 'val': scores})
 
-    fig, axes = plt.subplot_mosaic(mosaic=[['a', 'b', 'c'], ['a', 'd', 'e']], figsize=(30, 20), width_ratios=[1.5, 1.75, 1.75])
+    fig, axes = plt.subplot_mosaic(mosaic=[['a', 'b', 'c'], ['a', 'd', 'e']], figsize=(30, 20),
+                                   width_ratios=[1.5, 1.75, 1.75])
     plt.subplots_adjust(wspace=0.4, hspace=0.4)
 
     sns.barplot(x="lab", y="val", data=df, palette="muted", ax=axes['a'])
     # axes[0, 0] = df.plot.bar(x='lab', y='val', figsize=(10, 6), rot=0, legend=False, align='center', ylim=(0, 1.2))
     axes['a'].grid(which='major', color='#666666', linestyle='-', alpha=0.5)
     axes['a'].xaxis.grid(False)
+    axes['a'].set(ylim=(0, 1.1))
     ticks = []
     for i in range(0, 11, 2):
         ticks.append(i/10)
     axes['a'].set_yticks(ticks)
-    axes['a'].set_xlabel("Scores", fontdict={'fontsize': 32})
-    axes['a'].set_ylabel("Normalized Validation Error", fontdict={'fontsize': 32})
-    axes['a'].tick_params(axis='both', which='major', labelsize=28)
-    axes['a'].bar_label(axes['a'].containers[0], fontsize=28)
+    # axes['a'].set_xlabel("Validation Sample", fontdict={'fontsize': 16})
+    axes['a'].set_xlabel(None)
+    axes['a'].set_ylabel("Normalized Validation Error", fontdict={'fontsize': 16})
+    axes['a'].tick_params(axis='both', which='major', labelsize=12)
+    axes['a'].bar_label(axes['a'].containers[0], fontsize=12)
+    axes['a'].set_title('{}'.format(fig_names[0]), fontsize=16)
 
-    # for idx, sequence_size in enumerate(sequence_sizes):
-    #     dataframe = df[df['sequence'] == sequence_size]
-    #     dataframe.set_index('ship')
-    #     sns.barplot(x="ship", y="train_score_MSE", hue="c", data=dataframe, palette="muted", ax=axes[idx, 0])
-    #     axes[idx, 0].set(ylim=(0, 0.02))
-    #     axes[idx, 0].set_xlabel("Ships", fontdict={'fontsize': 32})
-    #     axes[idx, 0].set_ylabel("Training loss MSE", fontdict={'fontsize': 32})
-    #     axes[idx, 0].tick_params(axis='both', which='major', labelsize=28)
-    #     axes[idx, 0].tick_params(axis='both', which='minor', labelsize=28)
-    #     axes[idx, 0].grid(which='major', color='#666666', linestyle='-', alpha=0.5)
-    #     axes[idx, 0].xaxis.grid(False)
-    #     axes[idx, 0].set_title('{}'.format(fig_names[idx]), fontsize=28)
-    #     axes[idx, 0].set(xlabel=None)
-    #     if idx == len(sequence_sizes) - 1:
-    #         axes[idx, 0].legend(fontsize=28, loc=8, bbox_to_anchor=(0.5, -1.1), title='Pro-activeness',
-    #                             title_fontsize=28)
-    #     else:
-    #         axes[idx, 0].get_legend().remove()
+    for row_number in range(0, 2):
+        for column_number in range(1, 3):
+            _index = row_number * 2 + column_number
+            for key in test_predicts[_index - 1].keys():
+                _lw = 1
+                if key == 'Pactual':
+                    _lw = 2
+                axes[axes_names[_index]].plot(test_predicts[_index - 1][key], lw=_lw)
+            axes[axes_names[_index]].grid(which='major', color='#666666', linestyle='-', alpha=0.5)
+            axes[axes_names[_index]].grid(which='minor', color='#999999', linestyle='-', alpha=0.2)
+            axes[axes_names[_index]].tick_params(axis='both', which='major', labelsize=12)
+            axes[axes_names[_index]].set_xlabel("Validation Sample", fontdict={'fontsize': 16})
+            axes[axes_names[_index]].set_ylabel("Main Engine Power (kW)", fontdict={'fontsize': 16})
+            axes[axes_names[_index]].set_title('{}'.format(fig_names[_index]), fontsize=16)
 
-
-
-    # plt.grid(True)
-    # ax = df.plot.bar(x='lab', y='val', figsize=(10, 6), rot=0, legend=False, align='center', ylim=(0, 1.2))
-    # ax.grid(which='major', color='#666666', linestyle='-', alpha=0.5)
-    # ax.xaxis.grid(False)
-    # ticks = []
-    # for i in range(0, 11, 2):
-    #     ticks.append(i/10)
-    # ax.set_yticks(ticks)
-    # ax.set_xlabel("Scores", fontdict={'fontsize': 32})
-    # ax.set_ylabel("Normalized Validation Error", fontdict={'fontsize': 32})
-    # ax.tick_params(axis='both', which='major', labelsize=28)
-    # ax.bar_label(ax.containers[0], fontsize=28)
-    # plt.tight_layout()
-    fig.savefig('plots/Figure4_Ensamble_vs_Collaborative_vs_Centralized_vs_Federated_learning.eps', format='eps')
+    plt.show()
+    # fig.savefig('plots/Figure4_Ensamble_vs_Collaborative_vs_Centralized_vs_Federated_learning.eps', format='eps')
 
     print('END')

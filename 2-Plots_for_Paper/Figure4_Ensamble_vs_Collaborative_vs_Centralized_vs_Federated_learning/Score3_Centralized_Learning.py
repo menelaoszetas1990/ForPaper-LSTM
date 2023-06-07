@@ -36,7 +36,11 @@ class Score3:
         test_predict = self.model.predict(self.test_X)
         if not (np.isnan(test_predict).any()):
             test_predict = self.sc2.inverse_transform(test_predict)
-            return mean_squared_error(self.test_y, test_predict), mean_absolute_error(self.test_y, test_predict)
+            test_predicts = dict()
+            test_predicts['Pactual'] = Score3.y_test[sequence_size:]
+            test_predicts['Ppredict'] = test_predict
+            return [mean_squared_error(self.test_y, test_predict), mean_absolute_error(self.test_y, test_predict), \
+                   test_predicts]
 
 
 def run_score_3():

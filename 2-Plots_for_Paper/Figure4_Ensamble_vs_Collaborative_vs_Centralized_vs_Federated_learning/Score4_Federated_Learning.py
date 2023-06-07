@@ -155,7 +155,11 @@ class Score4:
         test_predict = model.predict(Score4.test_X)
         if not (np.isnan(test_predict).any()):
             test_predict = Score4.sc2.inverse_transform(test_predict)
-            return mean_squared_error(Score4.test_y, test_predict), mean_absolute_error(Score4.test_y, test_predict)
+            test_predicts = dict()
+            test_predicts['Pactual'] = Score4.y_test[sequence_size:]
+            test_predicts['Ppredict'] = test_predict
+            return [mean_squared_error(Score4.test_y, test_predict), mean_absolute_error(Score4.test_y, test_predict), \
+                   test_predicts]
 
 
 def run_score_4():

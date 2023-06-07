@@ -25,7 +25,6 @@ class Score2:
     dataset = pd.read_csv(test_data_filename, usecols=['trim', 'sog', 'stw', 'wspeedbf', 'wdir', 'me_power'])
     X_test = dataset[['trim', 'sog', 'stw', 'wspeedbf', 'wdir']].values
     y_test = dataset['me_power'].values.reshape(-1, 1)
-    test_y = {}
 
     def __init__(self, _model_name):
         self.model = load_model('models/{}'.format(_model_name))
@@ -34,7 +33,6 @@ class Score2:
         # scale x test data
         self.X_test_scaled = self.sc1.transform(Score2.X_test[:, :])
         self.test_X, self.test_y = to_sequences(self.X_test_scaled, Score2.y_test[:, :], sequence_size)
-        Score2.test_y = self.test_y
 
     def model_run(self):
         test_predict = self.model.predict(self.test_X)
@@ -59,6 +57,11 @@ def run_score_2():
         for idx, dataset_num in enumerate(dataset_nums):
             _sum += losses[idx][i]
         losses_avg.append(_sum / len(dataset_nums))
+    test_predicts = dict()
+    test_predicts['Pactual'] = Score2.y_test[sequence_size:]
+    test_predicts['Ppredict'] = losses_avg
 
     print('END Score_2')
-    return mean_squared_error(Score2.test_y, losses_avg), mean_absolute_error(Score2.test_y, losses_avg)
+    return [mean_squared_error(Score2.y_test[sequence_size + 1:], losses_avg),
+            mean_absolute_error(Score2.y_test[sequence_size + 1:], losses_avg),
+            test_predicts]
