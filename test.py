@@ -1,6 +1,5 @@
-a = [1,2,3]
+import random
 
-x = []
-for i in range(4):
-    x.append(a)
-    print(i)
+for i in range(10):
+    x = random.randint(-10, 10)
+    print(x)

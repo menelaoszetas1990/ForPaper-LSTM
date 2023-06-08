@@ -37,8 +37,8 @@ class Score3:
         if not (np.isnan(test_predict).any()):
             test_predict = self.sc2.inverse_transform(test_predict)
             test_predicts = dict()
-            test_predicts['Pactual'] = Score3.y_test[sequence_size:]
-            test_predicts['Ppredict'] = test_predict
+            test_predicts['Pactual'] = Score3.y_test[sequence_size + 1:]
+            test_predicts['Ppred'] = test_predict
             return [mean_squared_error(self.test_y, test_predict), mean_absolute_error(self.test_y, test_predict), \
                    test_predicts]
 

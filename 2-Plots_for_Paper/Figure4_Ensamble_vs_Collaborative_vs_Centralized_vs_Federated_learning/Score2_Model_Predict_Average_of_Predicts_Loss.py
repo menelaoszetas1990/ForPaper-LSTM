@@ -58,8 +58,8 @@ def run_score_2():
             _sum += losses[idx][i]
         losses_avg.append(_sum / len(dataset_nums))
     test_predicts = dict()
-    test_predicts['Pactual'] = Score2.y_test[sequence_size:]
-    test_predicts['Ppredict'] = losses_avg
+    test_predicts['Pactual'] = Score2.y_test[sequence_size + 1:]
+    test_predicts['Ppred'] = losses_avg
 
     print('END Score_2')
     return [mean_squared_error(Score2.y_test[sequence_size + 1:], losses_avg),

@@ -10,6 +10,7 @@ from tensorflow.python.keras.callbacks import LearningRateScheduler
 from settings import dataset_nums, learning_rate, sequence_size, batch_size, hidden_layers_separate_models
 from settings import test_data_filename, number_of_rounds
 from sklearn.metrics import mean_squared_error, mean_absolute_error
+from pickle import dump
 
 
 def to_sequences(dataset_x, dataset_y, _sequence_size=1):
@@ -149,15 +150,21 @@ class Score4:
 
         model.compile(optimizer='adam', loss='mse')
         model.set_weights(_global_weights)
-        # model.summary()
+
+        name = 'Fed_Avg_LR_{}_SS_{}_BS_{}_HL_{}' \
+            .format(_learning_rate, _sequence_size, _batch_size, _hidden_layers)
+        model.save('models/' + name)
+        # save the scalers
+        dump(Score4.sc1, open('scalers/' + name + '_sc1', 'wb'))
+        dump(Score4.sc2, open('scalers/' + name + '_sc2', 'wb'))
 
         # fit the model
         test_predict = model.predict(Score4.test_X)
         if not (np.isnan(test_predict).any()):
             test_predict = Score4.sc2.inverse_transform(test_predict)
             test_predicts = dict()
-            test_predicts['Pactual'] = Score4.y_test[sequence_size:]
-            test_predicts['Ppredict'] = test_predict
+            test_predicts['Pactual'] = Score4.y_test[sequence_size + 1:]
+            test_predicts['Ppred'] = test_predict
             return [mean_squared_error(Score4.test_y, test_predict), mean_absolute_error(Score4.test_y, test_predict), \
                    test_predicts]
 
