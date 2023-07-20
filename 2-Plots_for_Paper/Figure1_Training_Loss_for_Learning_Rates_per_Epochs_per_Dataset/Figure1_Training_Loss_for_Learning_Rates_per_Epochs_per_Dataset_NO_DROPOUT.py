@@ -8,6 +8,7 @@ from tensorflow.python.keras.layers import LSTM
 from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.callbacks import LearningRateScheduler
 import matplotlib.pyplot as plt
+import pickle
 
 
 class Figure1:
@@ -92,6 +93,24 @@ class Figure1:
         return history
 
 
+def storeData(_dictionary, _learning_rates, _ship_number):
+    db = []
+    for lr_idx, _learning_rate in enumerate(_learning_rates):
+        db.append([])
+        for ep_idx, epoch in enumerate(_dictionary[_learning_rate].epoch):
+            # initializing data to be stored in db
+            db[lr_idx].append(0)
+            db[lr_idx][ep_idx] = _dictionary[_learning_rate].history['loss'][ep_idx]
+
+    # Its important to use binary mode
+    dbfile = open('pickle/Figure_1_ship_{}'.format(_ship_number), 'ab')
+
+    # source, destination
+    db = np.array(db)
+    pickle.dump(db, dbfile)
+    dbfile.close()
+
+
 if __name__ == '__main__':
     best_lstm_setup = pd.read_csv(
         '../Step2_Getting_the_Best_LSTM_Setup/Comparison_Data_results_NO_DROPOUT.csv', header=0)
@@ -100,7 +119,7 @@ if __name__ == '__main__':
     fig_names = ['(a)', '(b)', '(c)', '(d)', '(e)', '(f)']
     # for test
     # dataset_nums = [1]
-    # learning_rates = [0.01]
+    # learning_rates = [0.01, 0.001]
 
     history_dict = {}
     for idx, dataset in enumerate(dataset_nums):
@@ -137,9 +156,12 @@ if __name__ == '__main__':
             if row_number == 1 and column_number == 1:
                 axes[row_number, column_number].legend(fontsize=28, loc=8, bbox_to_anchor=(0.5, -0.6))
             axes[row_number, column_number].set_title('{}'.format(fig_names[_index]), fontsize=28)
-    fig.savefig('plots/Figure1_Training_Loss_for_Learning_Rates_per_Epochs_per_Dataset_NO_DROPOUT.eps',
-                format='eps')
-    fig.savefig('../plots/Figure1/Figure1_Training_Loss_for_Learning_Rates_per_Epochs_per_Dataset_NO_DROPOUT.eps',
-                format='eps')
+
+            storeData(history_dict[dataset_nums[_index]], learning_rates, _index)
+
+    # fig.savefig('plots/Figure1_Training_Loss_for_Learning_Rates_per_Epochs_per_Dataset_NO_DROPOUT.eps',
+    #             format='eps')
+    # fig.savefig('../plots/Figure1/Figure1_Training_Loss_for_Learning_Rates_per_Epochs_per_Dataset_NO_DROPOUT.eps',
+    #             format='eps')
 
     print('END')
