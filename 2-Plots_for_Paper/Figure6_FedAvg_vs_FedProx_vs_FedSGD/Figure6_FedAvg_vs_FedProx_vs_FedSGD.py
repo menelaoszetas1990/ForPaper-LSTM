@@ -61,7 +61,7 @@ if __name__ == '__main__':
     plt.tick_params(axis='both', which='major', labelsize=21)
     plt.legend(fontsize=21)
 
-    plt.savefig('plots/Figure6_FedAvg_vs_FedProx_vs_FedSGD.eps', format='eps')
-    plt.savefig('../plots/Figure6/Figure6_FedAvg_vs_FedProx_vs_FedSGD.eps', format='eps')
+    plt.savefig('plots/Figure6_FedAvg_vs_Ensemble.eps', format='eps')
+    plt.savefig('../plots/Figure6/Figure6_FedAvg_vs_Ensemble.eps', format='eps')
 
     print('END')
