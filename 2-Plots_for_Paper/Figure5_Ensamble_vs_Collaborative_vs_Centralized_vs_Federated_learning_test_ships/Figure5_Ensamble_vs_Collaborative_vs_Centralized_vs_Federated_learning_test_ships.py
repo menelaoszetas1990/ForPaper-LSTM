@@ -69,5 +69,7 @@ if __name__ == '__main__':
 
     plt.savefig('plots/Figure5_Ensamble_vs_Collaborative_vs_Centralized_vs_Federated_learning_test_ships.eps',
                 format='eps')
+    plt.savefig('../plots/Figure5/Figure5_Ensamble_vs_Collaborative_vs_Centralized_vs_Federated_learning_test_ships.eps'
+                , format='eps')
 
     print('END')

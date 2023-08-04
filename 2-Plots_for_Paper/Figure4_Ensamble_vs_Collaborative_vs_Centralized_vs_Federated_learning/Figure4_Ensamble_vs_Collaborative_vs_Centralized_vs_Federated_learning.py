@@ -3,17 +3,14 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
-from tensorflow.python.keras.layers import Dense
-from tensorflow.python.keras.layers import LSTM
-from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.callbacks import LearningRateScheduler
+from keras.layers import Dense, LSTM
+from keras import Sequential
+from keras.callbacks import LearningRateScheduler
 from Score1_Model_Predict_Loss_Average_of_Losses import run_score_1
 from Score2_Model_Predict_Average_of_Predicts_Loss import run_score_2
 from Score3_Centralized_Learning import run_score_3
 from Score4_Federated_Learning import run_score_4
 import matplotlib.pyplot as plt
-# import matplotlib as mpl
-# from matplotlib.colors import LinearSegmentedColormap
 import seaborn as sns
 from settings import dataset_nums, learning_rate, sequence_size, batch_size, test_data_filename
 from settings import hidden_layers_separate_models, hidden_layers_hyper_models
@@ -282,5 +279,6 @@ if __name__ == '__main__':
             axes[axes_names[_index]].legend(fontsize=20)
 
     fig.savefig('plots/Figure4_Ensamble_vs_Collaborative_vs_Centralized_vs_Federated_learning.eps', format='eps')
+    fig.savefig('../plots/Figure4_Ensamble_vs_Collaborative_vs_Centralized_vs_Federated_learning.eps', format='eps')
 
     print('END')

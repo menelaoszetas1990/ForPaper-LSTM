@@ -3,10 +3,9 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
-from tensorflow.python.keras.layers import Dense
-from tensorflow.python.keras.layers import LSTM
-from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.callbacks import LearningRateScheduler
+from keras.layers import Dense, LSTM
+from keras import Sequential
+from keras.callbacks import LearningRateScheduler
 from sklearn.metrics import mean_squared_error
 import matplotlib.pyplot as plt
 import matplotlib as mpl

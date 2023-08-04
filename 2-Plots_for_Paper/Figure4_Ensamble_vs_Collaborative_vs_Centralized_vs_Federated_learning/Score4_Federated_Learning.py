@@ -3,10 +3,9 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
-from tensorflow.python.keras.layers import Dense
-from tensorflow.python.keras.layers import LSTM
-from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.callbacks import LearningRateScheduler
+from keras.layers import Dense, LSTM
+from keras import Sequential
+from keras.callbacks import LearningRateScheduler
 from settings import dataset_nums, learning_rate, sequence_size, batch_size, hidden_layers_separate_models
 from settings import test_data_filename, number_of_rounds
 from sklearn.metrics import mean_squared_error, mean_absolute_error
@@ -120,7 +119,7 @@ class Score4:
         model.fit(train_X, train_y, epochs=_max_epochs, batch_size=_batch_size, verbose=0, callbacks=[lr],
                   validation_data=(test_X, test_y))
 
-        return model.get_weights()
+        return model.get_weights(), _dataset.shape[0]
 
     @staticmethod
     def global_model_run(_global_weights, _max_epochs=10, _learning_rate=0.001, _sequence_size=10,
@@ -165,8 +164,8 @@ class Score4:
             test_predicts = dict()
             test_predicts['Pactual'] = Score4.y_test[sequence_size + 1:]
             test_predicts['Ppred'] = test_predict
-            return [mean_squared_error(Score4.test_y, test_predict), mean_absolute_error(Score4.test_y, test_predict), \
-                   test_predicts]
+            return [mean_squared_error(Score4.test_y, test_predict), mean_absolute_error(Score4.test_y, test_predict),
+                    test_predicts]
 
 
 def run_score_4():
@@ -179,21 +178,29 @@ def run_score_4():
 
     for counter in range(number_of_rounds):
         separate_models_weights = dict()
+        _total_records = 0
         for dataset_filename in dataset_filenames:
             separate_models_weights[dataset_filename] = \
                 test_dataset.run_separate_model(dataset_filename, test_dataset.global_weights, _max_epochs=10,
                                                 _learning_rate=learning_rate, _sequence_size=sequence_size,
                                                 _batch_size=batch_size, _hidden_layers=hidden_layers_separate_models)
+            _total_records += separate_models_weights[dataset_filename][1]
 
         # iteration to average them
         for i in range(len(test_dataset.global_weights)):
             for j in range(len(test_dataset.global_weights[i])):
                 weight_sum = 0
                 for dataset_filename in dataset_filenames:
-                    weight_sum += separate_models_weights[dataset_filename][i][j]
-                test_dataset.global_weights[i][j] = weight_sum/len(dataset_filenames)
+                    weight_sum += separate_models_weights[dataset_filename][0][i][j] * \
+                                  separate_models_weights[dataset_filename][1]/_total_records
+                test_dataset.global_weights[i][j] = weight_sum
 
     print('END Score_4')
     return Score4.global_model_run(test_dataset.global_weights, _max_epochs=10, _learning_rate=learning_rate,
                                    _sequence_size=sequence_size, _batch_size=batch_size,
                                    _hidden_layers=hidden_layers_separate_models)
+
+
+if __name__ == '__main__':
+    results = run_score_4()
+    print('END Score_4')

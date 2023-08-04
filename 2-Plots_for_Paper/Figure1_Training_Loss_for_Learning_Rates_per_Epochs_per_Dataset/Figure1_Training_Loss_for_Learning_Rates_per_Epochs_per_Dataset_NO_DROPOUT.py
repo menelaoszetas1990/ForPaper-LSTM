@@ -3,10 +3,9 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
-from tensorflow.python.keras.layers import Dense
-from tensorflow.python.keras.layers import LSTM
-from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.callbacks import LearningRateScheduler
+from keras.layers import Dense, LSTM
+from keras import Sequential
+from keras.callbacks import LearningRateScheduler
 import matplotlib.pyplot as plt
 import pickle
 
@@ -159,9 +158,9 @@ if __name__ == '__main__':
 
             storeData(history_dict[dataset_nums[_index]], learning_rates, _index)
 
-    # fig.savefig('plots/Figure1_Training_Loss_for_Learning_Rates_per_Epochs_per_Dataset_NO_DROPOUT.eps',
-    #             format='eps')
-    # fig.savefig('../plots/Figure1/Figure1_Training_Loss_for_Learning_Rates_per_Epochs_per_Dataset_NO_DROPOUT.eps',
-    #             format='eps')
+    fig.savefig('plots/Figure1_Training_Loss_for_Learning_Rates_per_Epochs_per_Dataset_NO_DROPOUT.eps',
+                format='eps')
+    fig.savefig('../plots/Figure1/Figure1_Training_Loss_for_Learning_Rates_per_Epochs_per_Dataset_NO_DROPOUT.eps',
+                format='eps')
 
     print('END')

@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 from settings import train_dataset_nums, learning_rate, sequence_size, batch_size, hidden_layers_separate_models
-from tensorflow.python.keras.models import load_model
+from keras.models import load_model
 from pickle import load
 
 
